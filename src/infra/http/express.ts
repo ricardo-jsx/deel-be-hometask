@@ -12,5 +12,6 @@ app.set('sequelize', sequelize);
 app.set('models', sequelize.models);
 
 app.get('/contracts/:id', getProfile, ContractsController.getContractById);
+app.get('/contracts', getProfile, ContractsController.getOngoingContracts);
 
 export default app;
