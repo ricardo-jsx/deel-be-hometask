@@ -6,7 +6,7 @@ import { ClientBalanceController } from '~/controller/client-balance.controller'
 import { ContractsController } from '~/controller/contracts.controller';
 import { JobsController } from '~/controller/jobs.controller';
 import { sequelize } from '~/infra/database/database';
-import { getProfile } from '~/middleware/getProfile';
+import { getProfile } from '~/infra/http/middlewares/getProfile';
 
 const app = express();
 

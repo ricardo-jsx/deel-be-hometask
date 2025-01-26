@@ -19,8 +19,6 @@ export class DepositMoneyUseCase {
       const pendingAmount = unpaidJobs.reduce((acc, job) => acc + job.price, 0);
       const maximumDeposit = pendingAmount * 0.25;
 
-      console.log('arm', amount, maximumDeposit)
-
       if(amount > maximumDeposit) {
         return new Err({ status: 400, message: 'Deposit amount exceeds 25% of pending payments' });
       }
