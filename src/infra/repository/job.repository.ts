@@ -1,4 +1,5 @@
 import { col, fn, literal, Op, Transaction } from "sequelize";
+
 import { Contract, Job, Profile } from "~/core/models";
 
 export class JobRepository {
@@ -85,5 +86,34 @@ export class JobRepository {
         });
 
         return highestPaidProfession;
+  }
+
+  async findTopPayingClients(start: Date, end: Date, limit: number) {
+    const topPayingClients = await Job.findAll({
+      where: {
+        paid: true,
+        paymentDate: { [Op.between]: [start, end] }
+      },
+      attributes: [
+        [fn('SUM', col('price')), 'total_paid'],
+        [literal('"Contract->Client"."id"'), 'clientId'],
+        [literal('"Contract->Client"."firstName"'), 'firstName'],
+        [literal('"Contract->Client"."lastName"'), 'lastName']
+      ],
+      include: [{
+        model: Contract,
+        attributes: [],
+        include: [{
+          model: Profile,
+          as: 'Client',
+          attributes: []
+        }]
+      }],
+      group: ['Contract->Client.id', 'Contract->Client.firstName', 'Contract->Client.lastName'],
+      order: [[literal('total_paid'), 'DESC']],
+      limit
+    });
+
+    return topPayingClients;
   }
 }

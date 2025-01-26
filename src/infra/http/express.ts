@@ -23,5 +23,6 @@ app.post('/jobs/:job_id/pay', getProfile, JobsController.payJob);
 app.post('/balances/deposit/:userId', getProfile, ClientBalanceController.depositMoney);
 
 app.get('/admin/best-profession', getProfile, AdminController.getHighestPaidProfession);
+app.get('/admin/best-clients', getProfile, AdminController.getBestClients);
 
 export default app;
