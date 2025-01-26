@@ -1,11 +1,13 @@
 import { Err, Ok } from "ts-results";
 
+import { BestProfessionResponse, bestProfessionResponseSchema } from "~/core/dtos/best-profession.dto";
 import { JobRepository } from "~/infra/repository/job.repository";
+import { UsecaseResponse } from "~/types/usecase-response.type";
 
 export class FindHighestPaidProfessionUseCase {
   constructor(private readonly jobRepository: JobRepository) {}
 
-  async execute(start: string, end: string) {
+  async execute(start: string, end: string): UsecaseResponse<BestProfessionResponse> {
     const startDate = start ? new Date(start) : new Date(0);
     const endDate = end ? new Date(end) : new Date();
 
@@ -15,6 +17,13 @@ export class FindHighestPaidProfessionUseCase {
       return new Err({ status: 404, message: 'No data found' });
     }
 
-    return new Ok(highestPaidProfession);
+    const highestPaidProfessionDto = bestProfessionResponseSchema.safeParse(highestPaidProfession.toJSON());
+
+    if(!highestPaidProfessionDto.success) {
+      console.error('[FindHighestPaidProfessionUseCase] Error parsing data', highestPaidProfessionDto.error.errors);
+      return new Err({ status: 500, message: 'Internal server error' });
+    }
+
+    return new Ok(highestPaidProfessionDto.data);
   }
 }
