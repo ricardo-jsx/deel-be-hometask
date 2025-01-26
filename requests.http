@@ -1,0 +1,38 @@
+### Get contract by ID
+curl -X GET "http://localhost:3001/contracts/1" \
+  -H "Accept: application/json" \
+  -H "profile_id: 1"
+
+### Get ongoing contracts
+curl -X GET "http://localhost:3001/contracts" \
+  -H "Accept: application/json" \
+  -H "profile_id: 6"
+
+### Get unpaid jobs
+curl -X GET "http://localhost:3001/jobs/unpaid" \
+  -H "Accept: application/json" \
+  -H "profile_id: 6"
+
+### Pay for a job
+curl -X POST "http://localhost:3001/jobs/3/pay" \
+  -H "Accept: application/json" \
+  -H "profile_id: 2" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 100}'
+
+### Deposit balance for a user
+curl -X POST "http://localhost:3001/balances/deposit/2" \
+  -H "Accept: application/json" \
+  -H "profile_id: 2" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 40}'
+
+### Get best profession
+curl -X GET "http://localhost:3001/admin/best-profession?start=2019-01-01&end=2023-12-31" \
+  -H "Accept: application/json" \
+  -H "profile_id: 1"
+
+### Get best clients
+curl -X GET "http://localhost:3001/admin/best-clients?start=2019-01-01&end=2023-12-31&limit=5" \
+  -H "Accept: application/json" \
+  -H "profile_id: 1"
