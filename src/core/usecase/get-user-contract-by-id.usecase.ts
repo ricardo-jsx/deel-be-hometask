@@ -1,19 +1,15 @@
 import { Op } from "sequelize";
 import { Err, Ok } from "ts-results";
+
 import { Contract } from "~/core/models";
+import { ContractRepository } from "~/infra/repository/contract.repository";
 
 export class GetUserContractById {
-	static async execute (contractId: string, userId: number) {
+  constructor(private readonly contractRepository: ContractRepository) {}
+
+	async execute (contractId: string, userId: number) {
     try {
-      const contract = await Contract.findOne({
-        where: {
-          id: contractId,
-          [Op.or]: [
-            { ContractorId: userId },
-            { ClientId: userId }
-          ]
-        }
-      });
+      const contract = await this.contractRepository.findContractById(contractId, userId);
       
       if(!contract) {
         return new Err({ status: 404, message: `Contract not found` });

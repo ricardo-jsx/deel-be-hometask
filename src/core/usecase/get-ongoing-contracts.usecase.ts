@@ -1,21 +1,13 @@
-import sequelize from "sequelize";
-import { Op } from "sequelize";
 import { Err, Ok } from "ts-results";
 
-import { Contract } from "~/core/models";
+import { ContractRepository } from "~/infra/repository/contract.repository";
 
 export class GetOngoingContracts {
-  static async execute (userId: number) {
+  constructor(private readonly contractRepository: ContractRepository) {}
+  
+  async execute (userId: number) {
     try {
-      const contracts = await Contract.findAll({
-        where: {
-          status: { [Op.not]: 'terminated'},
-          [Op.or]: [
-            { ContractorId: userId },
-            { ClientId: userId }
-          ]
-        }
-      })
+      const contracts = await this.contractRepository.findAllOngoingContracts(userId);
 
       if(!contracts.length) {
         return new Err({ status: 404, message: `No ongoing contracts found for user with id ${userId}` });

@@ -1,31 +1,13 @@
-import sequelize from "sequelize";
-import { Op } from "sequelize";
 import { Err, Ok } from "ts-results";
 
-import { Contract, Job } from "~/core/models";
+import { JobRepository } from "../../infra/repository/job.repository";
 
 export class GetUnpaidJobs {
-  static async execute (userId: number) {
+  constructor(private readonly jobRepository: JobRepository) {}
+
+  async execute (userId: number) {
     try {
-      const unpaidJobs = await Job.findAll({
-        where: {
-          paid: false,
-        },
-        include: [{
-          model: Contract,
-          where: {
-            [Op.and]: [
-              { status: 'in_progress' },
-              {
-                [Op.or]: [
-                  { ContractorId: userId },
-                  { ClientId: userId }
-                ]
-              }
-            ]
-          }
-        }]
-      });
+      const unpaidJobs = await this.jobRepository.findAllUnpaidJobs(userId);
 
       if(!unpaidJobs.length) {
         return new Err({ status: 200, message: `No unpaid jobs found` });
