@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 
 import { sequelize } from "~/infra/database/database";
+import { Contract } from "./contract";
 
 export class Job extends Model {
   declare id: number;
@@ -12,6 +13,9 @@ export class Job extends Model {
   // timestamps!
   declare createdAt: Date;
   declare updatedAt: Date;
+  
+  // Note this is optional since it's only populated when explicitly requested in code
+  declare Contract?: Contract;
 }
 
 Job.init(

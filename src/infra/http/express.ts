@@ -16,5 +16,6 @@ app.get('/contracts/:id', getProfile, ContractsController.getContractById);
 app.get('/contracts', getProfile, ContractsController.getOngoingContracts);
 
 app.get('/jobs/unpaid', getProfile, JobsController.getUnpaidJobs);
+app.post('/jobs/:job_id/pay', getProfile, JobsController.payJob);
 
 export default app;

@@ -10,6 +10,9 @@ export class Contract extends Model {
   // timestamps!
   declare createdAt: Date;
   declare updatedAt: Date;
+
+  // foreign keys
+  declare ContractorId: number;
 }
 
 Contract.init(
