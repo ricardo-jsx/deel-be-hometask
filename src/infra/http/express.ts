@@ -1,10 +1,11 @@
-import express from 'express';
 import bodyParser from 'body-parser';
+import express from 'express';
 
+import { ClientBalanceController } from '~/controller/client-balance.controller';
+import { ContractsController } from '~/controller/contracts.controller';
+import { JobsController } from '~/controller/jobs.controller';
 import { sequelize } from '~/infra/database/database';
 import { getProfile } from '~/middleware/getProfile';
-import { ContractsController } from '~/controller/contracts.controller';
-import { JobsController } from '../../controller/jobs.controller';
 
 const app = express();
 
@@ -17,5 +18,7 @@ app.get('/contracts', getProfile, ContractsController.getOngoingContracts);
 
 app.get('/jobs/unpaid', getProfile, JobsController.getUnpaidJobs);
 app.post('/jobs/:job_id/pay', getProfile, JobsController.payJob);
+
+app.post('/balances/deposit/:userId', getProfile, ClientBalanceController.depositMoney);
 
 export default app;

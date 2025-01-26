@@ -6,6 +6,23 @@ export class JobRepository {
     await job.save({ transaction });
   }
 
+  async findClientUnpaidJobs(clientId: number) {
+    const unpaidJobs = await Job.findAll({
+      where: { paid: false },
+      include: [{
+        model: Contract,
+        where: {
+          [Op.and]: [
+            { status: 'in_progress' },
+            { ClientId: clientId }
+          ]
+        }
+      }]
+    });
+
+    return unpaidJobs;
+  }
+
   async findAllUnpaidJobs(userId: number) {
     const unpaidJobs = await Job.findAll({
       where: { paid: false },
