@@ -4,11 +4,7 @@
 
 This backend exercise involves building a Node.js/Express.js app that will serve a REST API.
 
-There is not a strict time limit to complete this task, but we expect that you will need to spend between 3-5 hours to meet the requirements. Make sure to submit your test only when you are confident that it meets all the requirements and you are satisfied with the quality of the project.
-
 ## Data Models
-
-> **All models are defined in `src/model.js`**
 
 ### Profile
 
@@ -34,63 +30,71 @@ The exercise requires [Node.js](https://nodejs.org/en/) to be installed. We reco
 1. Start by creating a local repository for this folder.
 2. In the repo's root directory, run `npm install` to install all dependencies.
 3. Next, run `npm run seed` to seed the local SQLite database. **Warning: This will drop the database if it exists**. The database will be stored in a local file named `database.sqlite3`.
-4. Then run `npm start` to start both the server and the React client.
+4. Then run `npm start` to start the server.
 
-❗️ **Make sure to commit all changes to the master branch!**
-
-## Technical Notes
-
-- The server is running with [nodemon](https://nodemon.io/), which will automatically restart whenever you modify and save a file.
-- The database provider is SQLite, which will store data in a file local to your repository called `database.sqlite3`. The ORM [Sequelize](http://docs.sequelizejs.com/) is used on top of it. You should interact with Sequelize. **Please spend some time reading the Sequelize documentation before starting the exercise.**
-- To authenticate users, use the `getProfile` middleware located under `src/middleware/getProfile.js`. Users are authenticated by passing `profile_id` in the request header. Once authenticated, the user's profile will be available under `req.profile`. Ensure that only users associated with a contract can access their respective contracts.
-- The server is running on port 3001.
-
-## APIs to Implement
+## APIs
 
 Below is a list of the required APIs for the application.
 
-1. **_GET_** `/contracts/:id` - This API is broken 😵! It should return the contract only if it belongs to the profile making the request. Better fix that!
-
+1. **_GET_** `/contracts/:id` - Returns the contract only if it belongs to the profile making the request.
 2. **_GET_** `/contracts` - Returns a list of contracts belonging to a user (client or contractor). The list should only contain non-terminated contracts.
-
-3. **_GET_** `/jobs/unpaid` - Get all unpaid jobs for a user (**_either_** a client or contractor), but only for **_active contracts_**.
-
+3. **_GET_** `/jobs/unpaid` - Get all unpaid jobs for a user (either a client or contractor), but only for active contracts.
 4. **_POST_** `/jobs/:job_id/pay` - Pay for a job. A client can only pay if their balance is greater than or equal to the amount due. The payment amount should be moved from the client's balance to the contractor's balance.
-
 5. **_POST_** `/balances/deposit/:userId` - Deposit money into a client's balance. A client cannot deposit more than 25% of the total of jobs to pay at the time of deposit.
-
 6. **_GET_** `/admin/best-profession?start=<date>&end=<date>` - Returns the profession that earned the most money (sum of jobs paid) for any contractor who worked within the specified time range.
-
 7. **_GET_** `/admin/best-clients?start=<date>&end=<date>&limit=<integer>` - Returns the clients who paid the most for jobs within the specified time period. The `limit` query parameter should be applied, and the default limit is 2.
 
-```json
-[
-    {
-        "id": 1,
-        "fullName": "Reece Moyer",
-        "paid" : 100.3
-    },
-    {
-        "id": 200,
-        "fullName": "Debora Martin",
-        "paid" : 99
-    },
-    {
-        "id": 22,
-        "fullName": "Debora Martin",
-        "paid" : 21
-    }
-]
+## Example Requests
+
+### Get contract by ID
+```http
+curl -X GET "http://localhost:3001/contracts/1" \
+  -H "Accept: application/json" \
+  -H "profile_id: 1"
 ```
 
-## Going Above and Beyond the Requirements
+### Get ongoing contracts
+```http
+curl -X GET "http://localhost:3001/contracts" \
+  -H "Accept: application/json" \
+  -H "profile_id: 6"
+```
 
-Given the time expectations for this exercise, we don't expect anyone to submit anything super fancy. However, if you find yourself with extra time, any extra credit item(s) that showcase your unique strengths would be awesome! 🙌
+### Get unpaid jobs
+```http
+curl -X GET "http://localhost:3001/jobs/unpaid" \
+  -H "Accept: application/json" \
+  -H "profile_id: 6"
+```
 
-For example, writing some unit tests or a simple frontend demonstrating calls to your new APIs would be great.
+### Pay for a job
+```http
+curl -X POST "http://localhost:3001/jobs/3/pay" \
+  -H "Accept: application/json" \
+  -H "profile_id: 2" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 100}'
+```
 
-## Submitting the Assignment
+### Deposit balance for a user
+```http
+curl -X POST "http://localhost:3001/balances/deposit/2" \
+  -H "Accept: application/json" \
+  -H "profile_id: 2" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 40}'
+```
 
-When you've finished the assignment, zip your repo (make sure to include the .git folder) and send us the zip file.
+### Get best profession
+```http
+curl -X GET "http://localhost:3001/admin/best-profession?start=2019-01-01&end=2023-12-31" \
+  -H "Accept: application/json" \
+  -H "profile_id: 1"
+```
 
-Thank you and good luck! 🙏
+### Get best clients
+```http
+curl -X GET "http://localhost:3001/admin/best-clients?start=2019-01-01&end=2023-12-31&limit=5" \
+  -H "Accept: application/json" \
+  -H "profile_id: 1"
+```
