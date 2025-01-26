@@ -12,7 +12,7 @@ export class DepositMoneyUseCase {
     try {
       const unpaidJobs = await this.jobRepository.findClientUnpaidJobs(userId);
 
-      if (!unpaidJobs) {
+      if (!unpaidJobs.length) {
         return new Err({ status: 200, message: 'No unpaid jobs found' });
       }
 

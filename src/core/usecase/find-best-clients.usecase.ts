@@ -12,19 +12,24 @@ export class FindBestClientsUseCase {
     const endDate = end ? new Date(end) : new Date();
     const limitValue = parseInt(limit) || 2;
 
-    const topPayingClients = await this.jobRepository.findTopPayingClients(startDate, endDate, limitValue)
+    try {
+      const topPayingClients = await this.jobRepository.findTopPayingClients(startDate, endDate, limitValue)
 
-    if(!topPayingClients) {
-      return new Err({ status: 404, message: 'No data found' });
+      if(!topPayingClients.length) {
+        return new Err({ status: 404, message: 'No data found' });
+      }
+
+      const topPayingClientsDto = bestClientsResponseSchema.safeParse(topPayingClients.map(client => client.toJSON()));
+
+      if(!topPayingClientsDto.success) {
+        console.error('[FindBestClientsUseCase] Error parsing data', topPayingClientsDto.error.errors);
+        return new Err({ status: 500, message: 'Internal server error' });
+      }
+
+      return new Ok(topPayingClientsDto.data);
+    } catch (error) {
+      console.error(error);
+      return new Err({ status: 500, message: `Internal server error` });
     }
-
-    const topPayingClientsDto = bestClientsResponseSchema.safeParse(topPayingClients.map(client => client.toJSON()));
-
-    if(!topPayingClientsDto.success) {
-      console.error('[FindBestClientsUseCase] Error parsing data', topPayingClientsDto.error.errors);
-      return new Err({ status: 500, message: 'Internal server error' });
-    }
-
-    return new Ok(topPayingClientsDto.data);
   }
 }
