@@ -31,6 +31,7 @@ The exercise requires [Node.js](https://nodejs.org/en/) to be installed. We reco
 2. In the repo's root directory, run `npm install` to install all dependencies.
 3. Next, run `npm run seed` to seed the local SQLite database. **Warning: This will drop the database if it exists**. The database will be stored in a local file named `database.sqlite3`.
 4. Then run `npm start` to start the server.
+5. To run tests, use the command `npm test`.
 
 ## APIs
 
@@ -98,3 +99,6 @@ curl -X GET "http://localhost:3001/admin/best-clients?start=2019-01-01&end=2023-
   -H "Accept: application/json" \
   -H "profile_id: 1"
 ```
+
+## Improvements
+Unfortunately, I haven't had the time to increase the unit test coverage using Jest for the use case and controller files. Additionally, end-to-end (E2E) tests using Supertest also need to be added. Improving test coverage and adding E2E tests are important next steps to ensure the robustness and reliability of the application.
