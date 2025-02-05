@@ -102,3 +102,28 @@ curl -X GET "http://localhost:3001/admin/best-clients?start=2019-01-01&end=2023-
 
 ## Improvements
 Unfortunately, I haven't had the time to increase the unit test coverage using Jest for the use case and controller files. Additionally, end-to-end (E2E) tests using Supertest also need to be added. Improving test coverage and adding E2E tests are important next steps to ensure the robustness and reliability of the application.
+
+## Deel Feedback Decision
+
+### Pros:
+- Prevents duplicate payment jobs.
+- Includes a transaction for the payment job.
+- Utilizes Sequelize for admin-level aggregations.
+- Prevents SQL injection vulnerabilities.
+- Written in TypeScript for better type safety.
+- Avoids excessive use of transactions.
+- Includes at least 1 unit test to verify functionality.
+
+### Missing Requirements:
+- **Safe Concurrent Update:** Does not handle concurrent updates of jobs and balances safely.
+- **SQL Aggregation for Unpaid Jobs:** Uses SQL aggregation for calculating the sum of unpaid jobs.
+- **Negative/Invalid Deposit Prevention:** Does not prevent negative or invalid deposit amounts.
+- **Deposit to Another User’s Account:** Does not prevent deposits from being made to another user’s account.
+- **Transaction Handling for Deposit:** Missing a transaction when processing deposits.
+- **Proper Transaction Wrapping:** Transactions are not wrapped properly during deposit operations.
+- **Invalid Date Prevention:** Does not validate dates for deposits.
+
+## Overall Evaluation:
+This is a solid submission with good use of TypeScript and unit tests. However, there are a few critical issues in the deposit functionality that need attention. These include the lack of transaction handling, allowance for negative deposit values, and the potential for deposits being made to another user's account.
+
+Due to these missing key features, particularly around transaction management and validation, this submission scores 1 in the evaluation.
